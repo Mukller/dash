@@ -2,6 +2,11 @@
 All notable changes to `dash` will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+## Fixed
+- [#3846](https://github.com/plotly/dash/issues/3846) Fix children returned by a callback being unmounted and remounted on every update instead of reconciled in place, which reset component state and slowed rendering of large subtrees 3-4x (regression introduced in 4.2.0 by [#3570](https://github.com/plotly/dash/pull/3570)). A component passed from a parent is now only remounted when its identity (namespace, type or id) at that position actually changed; the same component with new prop values updates in place, restoring pre-4.2 behavior. To force a remount of a stateful component from a callback, return it with a different `id`.
+
 ## [4.4.0] - 2026-07-03
 
 ### Added
