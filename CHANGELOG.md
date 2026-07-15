@@ -4,8 +4,11 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
-## Fixed
-- [#3846](https://github.com/plotly/dash/issues/3846) Fix children returned by a callback being unmounted and remounted on every update instead of reconciled in place, which reset component state and slowed rendering of large subtrees 3-4x (regression introduced in 4.2.0 by [#3570](https://github.com/plotly/dash/pull/3570)). A component passed from a parent is now only remounted when its identity (namespace, type or id) at that position actually changed; the same component with new prop values updates in place, restoring pre-4.2 behavior. To force a remount of a stateful component from a callback, return it with a different `id`.
+### Added
+- Added `dash.remount`, a wrapper for a component returned from a callback that forces the renderer to remount it - unmounting the existing instance and mounting a fresh one, resetting its internal state - instead of reconciling it in place. This is the explicit, opt-in way to reset a stateful component (eg. AG Grid, a dropdown keeping transient UI state) from a callback without having to change its `id`.
+
+### Fixed
+- [#3846](https://github.com/plotly/dash/issues/3846) Fix children returned by a callback being unmounted and remounted on every update instead of reconciled in place, which reset component state and slowed rendering of large subtrees 3-4x (regression introduced in 4.2.0 by [#3570](https://github.com/plotly/dash/pull/3570)). A component passed from a parent is now only remounted when its identity (namespace, type or id) at that position actually changed; the same component with new prop values updates in place, restoring pre-4.2 behavior. To force a remount of a stateful component from a callback, wrap it with `dash.remount` (or return it with a different `id`).
 - Fix components rendered as props (eg. component labels in `dcc.Dropdown` options, `dcc.Tab` labels) crashing with "can't access property 'props', layout is undefined" or failing to update when the host component's subtree was replaced by a callback. Components inserted out of the layout tree via `ExternalWrapper` now re-insert themselves when their layout entry was removed, so they update in place instead of updating a stale path.
 
 ## [4.4.0] - 2026-07-03
